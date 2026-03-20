@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Restaurant Menu</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .menu, .order {
+        background: white;
+        padding: 20px;
+        margin: 20px auto;
+        width: 300px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    button {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    button:hover {
+        background: #218838;
+    }
+
+    .total {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🍽 Restaurant Menu</h1>
+
+<div class="menu">
+    <h2>Menu</h2>
+
+    <div class="item">
+        <span>Burger - $8.99</span>
+        <button onclick="addItem('Burger', 8.99)">Add</button>
+    </div>
+
+    <div class="item">
+        <span>Pizza - $12.50</span>
+        <button onclick="addItem('Pizza', 12.50)">Add</button>
+    </div>
+
+    <div class="item">
+        <span>Pasta - $10.75</span>
+        <button onclick="addItem('Pasta', 10.75)">Add</button>
+    </div>
+
+    <div class="item">
+        <span>Salad - $6.50</span>
+        <button onclick="addItem('Salad', 6.50)">Add</button>
+    </div>
+
+    <div class="item">
+        <span>Soda - $2.00</span>
+        <button onclick="addItem('Soda', 2.00)">Add</button>
+    </div>
+</div>
+
+<div class="order">
+    <h2>Your Order</h2>
+    <ul id="orderList"></ul>
+    <div class="total">Total: $<span id="total">0.00</span></div>
+</div>
+
+<script>
+    let total = 0;
+
+    function addItem(name, price) {
+        const list = document.getElementById("orderList");
+
+        const li = document.createElement("li");
+        li.textContent = `${name} - $${price.toFixed(2)}`;
+        list.appendChild(li);
+
+        total += price;
+        document.getElementById("total").textContent = total.toFixed(2);
+    }
+</script>
+
+</body>
+</html>
