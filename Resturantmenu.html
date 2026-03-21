@@ -38,10 +38,19 @@
         padding: 5px 10px;
         cursor: pointer;
         border-radius: 5px;
+        margin: 2px;
     }
 
     button:hover {
         background: #218838;
+    }
+
+    .danger {
+        background: #dc3545;
+    }
+
+    .danger:hover {
+        background: #c82333;
     }
 
     .total {
@@ -86,12 +95,20 @@
 
 <div class="order">
     <h2>Your Order</h2>
+
     <ul id="orderList"></ul>
-    <div class="total">Total: $<span id="total">0.00</span></div>
+
+    <div class="total">
+        Total: $<span id="total">0.00</span>
+    </div>
+
+    <button onclick="removeLastItem()">Remove Last</button>
+    <button class="danger" onclick="clearOrder()">Clear Order</button>
 </div>
 
 <script>
     let total = 0;
+    let orderItems = [];
 
     function addItem(name, price) {
         const list = document.getElementById("orderList");
@@ -100,7 +117,32 @@
         li.textContent = `${name} - $${price.toFixed(2)}`;
         list.appendChild(li);
 
+        orderItems.push({ name, price });
+
         total += price;
+        updateTotal();
+    }
+
+    function removeLastItem() {
+        if (orderItems.length === 0) return;
+
+        const list = document.getElementById("orderList");
+        list.removeChild(list.lastChild);
+
+        const removed = orderItems.pop();
+        total -= removed.price;
+
+        updateTotal();
+    }
+
+    function clearOrder() {
+        document.getElementById("orderList").innerHTML = "";
+        orderItems = [];
+        total = 0;
+        updateTotal();
+    }
+
+    function updateTotal() {
         document.getElementById("total").textContent = total.toFixed(2);
     }
 </script>
