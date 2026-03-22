@@ -20,7 +20,7 @@
         background: white;
         padding: 20px;
         margin: 20px auto;
-        width: 300px;
+        width: 320px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
@@ -38,7 +38,7 @@
         padding: 5px 10px;
         cursor: pointer;
         border-radius: 5px;
-        margin: 2px;
+        margin-left: 5px;
     }
 
     button:hover {
@@ -51,6 +51,15 @@
 
     .danger:hover {
         background: #c82333;
+    }
+
+    li {
+        margin-bottom: 8px;
+    }
+
+    .controls button {
+        padding: 3px 8px;
+        font-size: 14px;
     }
 
     .total {
@@ -102,47 +111,65 @@
         Total: $<span id="total">0.00</span>
     </div>
 
-    <button onclick="removeLastItem()">Remove Last</button>
     <button class="danger" onclick="clearOrder()">Clear Order</button>
 </div>
 
 <script>
-    let total = 0;
-    let orderItems = [];
+    let orderItems = {};
 
     function addItem(name, price) {
-        const list = document.getElementById("orderList");
+        if (!orderItems[name]) {
+            orderItems[name] = { price: price, quantity: 1 };
+        } else {
+            orderItems[name].quantity++;
+        }
 
-        const li = document.createElement("li");
-        li.textContent = `${name} - $${price.toFixed(2)}`;
-        list.appendChild(li);
-
-        orderItems.push({ name, price });
-
-        total += price;
-        updateTotal();
+        renderOrder();
     }
 
-    function removeLastItem() {
-        if (orderItems.length === 0) return;
+    function increaseItem(name) {
+        orderItems[name].quantity++;
+        renderOrder();
+    }
 
-        const list = document.getElementById("orderList");
-        list.removeChild(list.lastChild);
+    function decreaseItem(name) {
+        orderItems[name].quantity--;
 
-        const removed = orderItems.pop();
-        total -= removed.price;
+        if (orderItems[name].quantity <= 0) {
+            delete orderItems[name];
+        }
 
-        updateTotal();
+        renderOrder();
     }
 
     function clearOrder() {
-        document.getElementById("orderList").innerHTML = "";
-        orderItems = [];
-        total = 0;
-        updateTotal();
+        orderItems = {};
+        renderOrder();
     }
 
-    function updateTotal() {
+    function renderOrder() {
+        const list = document.getElementById("orderList");
+        list.innerHTML = "";
+
+        let total = 0;
+
+        for (let name in orderItems) {
+            const item = orderItems[name];
+
+            const li = document.createElement("li");
+            li.innerHTML = `
+                ${name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
+                <span class="controls">
+                    <button onclick="increaseItem('${name}')">+</button>
+                    <button onclick="decreaseItem('${name}')">-</button>
+                </span>
+            `;
+
+            list.appendChild(li);
+
+            total += item.price * item.quantity;
+        }
+
         document.getElementById("total").textContent = total.toFixed(2);
     }
 </script>
