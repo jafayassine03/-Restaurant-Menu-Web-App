@@ -53,6 +53,16 @@
         background: #c82333;
     }
 
+    .checkout {
+        background: #007bff;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .checkout:hover {
+        background: #0069d9;
+    }
+
     li {
         margin-bottom: 8px;
     }
@@ -112,6 +122,7 @@
     </div>
 
     <button class="danger" onclick="clearOrder()">Clear Order</button>
+    <button class="checkout" onclick="checkout()">Checkout</button>
 </div>
 
 <script>
@@ -145,6 +156,35 @@
     function clearOrder() {
         orderItems = {};
         renderOrder();
+    }
+
+    function checkout() {
+        if (Object.keys(orderItems).length === 0) {
+            alert("Your order is empty!");
+            return;
+        }
+
+        let receipt = "🧾 Receipt\n\n";
+        let total = 0;
+
+        for (let name in orderItems) {
+            let item = orderItems[name];
+            let itemTotal = item.price * item.quantity;
+
+            receipt += `${name} x${item.quantity} - $${itemTotal.toFixed(2)}\n`;
+            total += itemTotal;
+        }
+
+        let date = new Date();
+
+        receipt += "\n----------------------\n";
+        receipt += `Total: $${total.toFixed(2)}\n`;
+        receipt += `Date: ${date.toLocaleString()}\n`;
+        receipt += "Thank you! 🍽";
+
+        alert(receipt);
+
+        clearOrder();
     }
 
     function renderOrder() {
