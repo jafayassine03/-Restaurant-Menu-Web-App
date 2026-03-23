@@ -1,82 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Restaurant Menu</title>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f4f4f4;
-        margin: 0;
-        padding: 20px;
-    }
-
-    h1 {
-        text-align: center;
-    }
-
-    .menu, .order {
-        background: white;
-        padding: 20px;
-        margin: 20px auto;
-        width: 320px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .item {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-
-    button {
-        background: #28a745;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 5px;
-        margin-left: 5px;
-    }
-
-    button:hover {
-        background: #218838;
-    }
-
-    .danger {
-        background: #dc3545;
-    }
-
-    .danger:hover {
-        background: #c82333;
-    }
-
-    .checkout {
-        background: #007bff;
-        margin-top: 10px;
-        width: 100%;
-    }
-
-    .checkout:hover {
-        background: #0069d9;
-    }
-
-    li {
-        margin-bottom: 8px;
-    }
-
-    .controls button {
-        padding: 3px 8px;
-        font-size: 14px;
-    }
-
-    .total {
-        font-weight: bold;
-        margin-top: 10px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>Restaurant Menu</title>
+    <link rel="stylesheet" href="Resturantmenu.css">
 </head>
 
 <body>
@@ -126,92 +53,89 @@
 </div>
 
 <script>
-    let orderItems = {};
+let orderItems = {};
 
-    function addItem(name, price) {
-        if (!orderItems[name]) {
-            orderItems[name] = { price: price, quantity: 1 };
-        } else {
-            orderItems[name].quantity++;
-        }
-
-        renderOrder();
-    }
-
-    function increaseItem(name) {
+function addItem(name, price) {
+    if (!orderItems[name]) {
+        orderItems[name] = { price: price, quantity: 1 };
+    } else {
         orderItems[name].quantity++;
-        renderOrder();
+    }
+    renderOrder();
+}
+
+function increaseItem(name) {
+    orderItems[name].quantity++;
+    renderOrder();
+}
+
+function decreaseItem(name) {
+    orderItems[name].quantity--;
+
+    if (orderItems[name].quantity <= 0) {
+        delete orderItems[name];
+    }
+    renderOrder();
+}
+
+function clearOrder() {
+    orderItems = {};
+    renderOrder();
+}
+
+function checkout() {
+    if (Object.keys(orderItems).length === 0) {
+        alert("Your order is empty!");
+        return;
     }
 
-    function decreaseItem(name) {
-        orderItems[name].quantity--;
+    let receipt = "🧾 Receipt\n\n";
+    let total = 0;
 
-        if (orderItems[name].quantity <= 0) {
-            delete orderItems[name];
-        }
+    for (let name in orderItems) {
+        let item = orderItems[name];
+        let itemTotal = item.price * item.quantity;
 
-        renderOrder();
+        receipt += `${name} x${item.quantity} - $${itemTotal.toFixed(2)}\n`;
+        total += itemTotal;
     }
 
-    function clearOrder() {
-        orderItems = {};
-        renderOrder();
+    let date = new Date();
+
+    receipt += "\n----------------------\n";
+    receipt += `Total: $${total.toFixed(2)}\n`;
+    receipt += `Date: ${date.toLocaleString()}\n`;
+    receipt += "Thank you! 🍽";
+
+    alert(receipt);
+
+    clearOrder();
+}
+
+function renderOrder() {
+    const list = document.getElementById("orderList");
+    list.innerHTML = "";
+
+    let total = 0;
+
+    for (let name in orderItems) {
+        const item = orderItems[name];
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+            ${name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
+            <span class="controls">
+                <button onclick="increaseItem('${name}')">+</button>
+                <button onclick="decreaseItem('${name}')">-</button>
+            </span>
+        `;
+
+        list.appendChild(li);
+        total += item.price * item.quantity;
     }
 
-    function checkout() {
-        if (Object.keys(orderItems).length === 0) {
-            alert("Your order is empty!");
-            return;
-        }
-
-        let receipt = "🧾 Receipt\n\n";
-        let total = 0;
-
-        for (let name in orderItems) {
-            let item = orderItems[name];
-            let itemTotal = item.price * item.quantity;
-
-            receipt += `${name} x${item.quantity} - $${itemTotal.toFixed(2)}\n`;
-            total += itemTotal;
-        }
-
-        let date = new Date();
-
-        receipt += "\n----------------------\n";
-        receipt += `Total: $${total.toFixed(2)}\n`;
-        receipt += `Date: ${date.toLocaleString()}\n`;
-        receipt += "Thank you! 🍽";
-
-        alert(receipt);
-
-        clearOrder();
-    }
-
-    function renderOrder() {
-        const list = document.getElementById("orderList");
-        list.innerHTML = "";
-
-        let total = 0;
-
-        for (let name in orderItems) {
-            const item = orderItems[name];
-
-            const li = document.createElement("li");
-            li.innerHTML = `
-                ${name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
-                <span class="controls">
-                    <button onclick="increaseItem('${name}')">+</button>
-                    <button onclick="decreaseItem('${name}')">-</button>
-                </span>
-            `;
-
-            list.appendChild(li);
-
-            total += item.price * item.quantity;
-        }
-
-        document.getElementById("total").textContent = total.toFixed(2);
-    }
+    document.getElementById("total").textContent = total.toFixed(2);
+}
 </script>
 
 </body>
