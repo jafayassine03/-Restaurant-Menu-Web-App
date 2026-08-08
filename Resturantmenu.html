@@ -42,10 +42,18 @@
 <div class="order">
     <h2>Your Order</h2>
 
+    <div class="discount-section">
+        <label for="promoCode">Promo Code:</label>
+        <input type="text" id="promoCode" placeholder="Enter code (e.g. SAVE10)">
+        <button onclick="applyPromo()">Apply</button>
+    </div>
+
     <ul id="orderList"></ul>
 
     <div class="total">
-        Total: $<span id="total">0.00</span>
+        Subtotal: $<span id="subtotal">0.00</span><br>
+        Discount: -<span id="discountAmount">$0.00</span><br>
+        <strong>Total: $<span id="total">0.00</span></strong>
     </div>
 
     <button class="danger" onclick="clearOrder()">Clear Order</button>
@@ -54,6 +62,7 @@
 
 <script>
 let orderItems = {};
+let discountRate = 0;
 
 function addItem(name, price) {
     if (!orderItems[name]) {
@@ -78,8 +87,25 @@ function decreaseItem(name) {
     renderOrder();
 }
 
+function applyPromo() {
+    const code = document.getElementById("promoCode").value.trim().toUpperCase();
+    if (code === "SAVE10") {
+        discountRate = 0.10;
+        alert("10% discount applied!");
+    } else if (code === "SAVE20") {
+        discountRate = 0.20;
+        alert("20% discount applied!");
+    } else {
+        discountRate = 0;
+        alert("Invalid promo code!");
+    }
+    renderOrder();
+}
+
 function clearOrder() {
     orderItems = {};
+    discountRate = 0;
+    document.getElementById("promoCode").value = "";
     renderOrder();
 }
 
@@ -90,25 +116,30 @@ function checkout() {
     }
 
     let receipt = "🧾 Receipt\n\n";
-    let total = 0;
+    let subtotal = 0;
 
     for (let name in orderItems) {
         let item = orderItems[name];
         let itemTotal = item.price * item.quantity;
 
         receipt += `${name} x${item.quantity} - $${itemTotal.toFixed(2)}\n`;
-        total += itemTotal;
+        subtotal += itemTotal;
     }
 
+    let discount = subtotal * discountRate;
+    let total = subtotal - discount;
     let date = new Date();
 
     receipt += "\n----------------------\n";
+    receipt += `Subtotal: $${subtotal.toFixed(2)}\n`;
+    if (discountRate > 0) {
+        receipt += `Discount: -$${discount.toFixed(2)}\n`;
+    }
     receipt += `Total: $${total.toFixed(2)}\n`;
     receipt += `Date: ${date.toLocaleString()}\n`;
     receipt += "Thank you! 🍽";
 
     alert(receipt);
-
     clearOrder();
 }
 
@@ -116,7 +147,7 @@ function renderOrder() {
     const list = document.getElementById("orderList");
     list.innerHTML = "";
 
-    let total = 0;
+    let subtotal = 0;
 
     for (let name in orderItems) {
         const item = orderItems[name];
@@ -131,9 +162,14 @@ function renderOrder() {
         `;
 
         list.appendChild(li);
-        total += item.price * item.quantity;
+        subtotal += item.price * item.quantity;
     }
 
+    let discount = subtotal * discountRate;
+    let total = subtotal - discount;
+
+    document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+    document.getElementById("discountAmount").textContent = `$${discount.toFixed(2)}`;
     document.getElementById("total").textContent = total.toFixed(2);
 }
 </script>
