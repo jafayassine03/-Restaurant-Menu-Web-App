@@ -52,6 +52,7 @@
 
     <div class="total">
         Subtotal: $<span id="subtotal">0.00</span><br>
+        Tax (8%): $<span id="taxAmount">0.00</span><br>
         Discount: -<span id="discountAmount">$0.00</span><br>
         <strong>Total: $<span id="total">0.00</span></strong>
     </div>
@@ -126,12 +127,14 @@ function checkout() {
         subtotal += itemTotal;
     }
 
+    let tax = subtotal * 0.08;
     let discount = subtotal * discountRate;
-    let total = subtotal - discount;
+    let total = (subtotal + tax) - discount;
     let date = new Date();
 
     receipt += "\n----------------------\n";
     receipt += `Subtotal: $${subtotal.toFixed(2)}\n`;
+    receipt += `Tax (8%): $${tax.toFixed(2)}\n`;
     if (discountRate > 0) {
         receipt += `Discount: -$${discount.toFixed(2)}\n`;
     }
@@ -165,10 +168,12 @@ function renderOrder() {
         subtotal += item.price * item.quantity;
     }
 
+    let tax = subtotal * 0.08;
     let discount = subtotal * discountRate;
-    let total = subtotal - discount;
+    let total = (subtotal + tax) - discount;
 
     document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+    document.getElementById("taxAmount").textContent = tax.toFixed(2);
     document.getElementById("discountAmount").textContent = `$${discount.toFixed(2)}`;
     document.getElementById("total").textContent = total.toFixed(2);
 }
