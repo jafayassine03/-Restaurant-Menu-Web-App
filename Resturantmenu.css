@@ -1,115 +1,360 @@
-/* Reset a bit */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ Modern Order App</title>
+    <style>
+        /* Reset a bit */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #f4f4f4, #dfe9f3);
-    padding: 20px;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f4f4f4, #dfe9f3);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #333;
-}
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
 
-.menu, .order {
-    background: white;
-    padding: 20px;
-    margin: 20px auto;
-    width: 320px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .app-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
 
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    animation: fadeIn 0.5s ease-in;
-}
+        .menu, .order {
+            background: white;
+            padding: 20px;
+            width: 320px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            animation: fadeIn 0.5s ease-in;
+            flex: 0 1 320px;
+        }
 
-.menu:hover, .order:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-}
+        .menu:hover, .order:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
 
-.item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
 
-button {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 6px;
-    margin-left: 5px;
-    transition: 0.2s;
-    font-size: 14px;
-}
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-left: 5px;
+            transition: 0.2s;
+            font-size: 14px;
+        }
 
-button:hover {
-    background: #218838;
-}
+        button:hover {
+            background: #218838;
+        }
 
-button:active {
-    transform: scale(0.95);
-}
+        button:active {
+            transform: scale(0.95);
+        }
 
-/* Remove button */
-.danger {
-    background: #dc3545;
-}
+        /* Remove button */
+        .danger {
+            background: #dc3545;
+        }
 
-.danger:hover {
-    background: #c82333;
-}
+        .danger:hover {
+            background: #c82333;
+        }
 
-/* Checkout button */
-.checkout {
-    background: #007bff;
-    margin-top: 10px;
-    width: 100%;
-    font-size: 16px;
-}
+        /* Checkout button */
+        .checkout {
+            background: #007bff;
+            margin-top: 10px;
+            width: 100%;
+            font-size: 16px;
+        }
 
-.checkout:hover {
-    background: #0069d9;
-}
+        .checkout:hover {
+            background: #0069d9;
+        }
 
-li {
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        /* extra feature: clear order */
+        .clear-order {
+            background: #6c757d;
+            margin-top: 6px;
+            width: 100%;
+            font-size: 14px;
+        }
+        .clear-order:hover {
+            background: #5a6268;
+        }
 
-.controls button {
-    padding: 3px 8px;
-    font-size: 12px;
-}
+        li {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px dashed #eee;
+        }
 
-.total {
-    font-weight: bold;
-    margin-top: 15px;
-    font-size: 18px;
-    color: #333;
-}
+        .controls button {
+            padding: 3px 8px;
+            font-size: 12px;
+        }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        .total {
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            border-top: 2px solid #ddd;
+            padding-top: 12px;
+        }
+
+        /* empty state */
+        .empty-order {
+            color: #888;
+            font-style: italic;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* responsive */
+        @media (max-width: 700px) {
+            .app-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .menu, .order {
+                width: 100%;
+                max-width: 380px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>🍕 Quick Bites</h1>
+
+<div class="app-wrapper">
+    <!-- MENU SECTION -->
+    <div class="menu">
+        <h2 style="margin-bottom: 15px; color: #2c3e50;">📋 Menu</h2>
+        <div id="menu-items">
+            <!-- dynamically injected -->
+        </div>
+    </div>
+
+    <!-- ORDER SECTION -->
+    <div class="order">
+        <h2 style="margin-bottom: 15px; color: #2c3e50;">🧾 Your Order</h2>
+        <ul id="order-list" style="list-style: none; margin-top: 5px;">
+            <li class="empty-order">No items yet</li>
+        </ul>
+        <div class="total">
+            <span>Total:</span>
+            <span id="total-price">$0.00</span>
+        </div>
+        <button class="checkout" id="checkout-btn">✅ Checkout</button>
+        <!-- NEW FEATURE: Clear order button (no comments) -->
+        <button class="clear-order" id="clear-order-btn">🗑️ Clear Order</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ----- MENU DATA -----
+        const menuItems = [
+            { id: 'pizza', name: '🍕 Pizza', price: 12.99 },
+            { id: 'burger', name: '🍔 Burger', price: 9.49 },
+            { id: 'pasta', name: '🍝 Pasta', price: 11.25 },
+            { id: 'salad', name: '🥗 Salad', price: 7.99 },
+            { id: 'soda', name: '🥤 Soda', price: 2.50 }
+        ];
+
+        // ----- STATE -----
+        let order = [];  // array of { id, name, price, quantity }
+
+        // ----- DOM REFS -----
+        const menuContainer = document.getElementById('menu-items');
+        const orderList = document.getElementById('order-list');
+        const totalSpan = document.getElementById('total-price');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const clearOrderBtn = document.getElementById('clear-order-btn');
+
+        // ----- RENDER MENU -----
+        function renderMenu() {
+            menuContainer.innerHTML = '';
+            menuItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <span><strong>${item.name}</strong> $${item.price.toFixed(2)}</span>
+                    <button data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">+ Add</button>
+                `;
+                menuContainer.appendChild(div);
+            });
+
+            // attach event listeners to "Add" buttons
+            document.querySelectorAll('#menu-items .item button').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+                    const price = parseFloat(this.dataset.price);
+                    addToOrder(id, name, price);
+                });
+            });
+        }
+
+        // ----- ADD TO ORDER (or increment) -----
+        function addToOrder(id, name, price) {
+            const existing = order.find(item => item.id === id);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                order.push({ id, name, price, quantity: 1 });
+            }
+            renderOrder();
+        }
+
+        // ----- REMOVE ONE (decrement) -----
+        function removeOne(id) {
+            const index = order.findIndex(item => item.id === id);
+            if (index === -1) return;
+            const item = order[index];
+            if (item.quantity > 1) {
+                item.quantity -= 1;
+            } else {
+                order.splice(index, 1);
+            }
+            renderOrder();
+        }
+
+        // ----- REMOVE ENTIRE ITEM (delete) -----
+        function removeItem(id) {
+            const index = order.findIndex(item => item.id === id);
+            if (index !== -1) {
+                order.splice(index, 1);
+                renderOrder();
+            }
+        }
+
+        // ----- CLEAR ORDER (NEW FEATURE) -----
+        function clearOrder() {
+            if (order.length === 0) return;
+            if (confirm('Clear your entire order?')) {
+                order = [];
+                renderOrder();
+            }
+        }
+
+        // ----- RENDER ORDER -----
+        function renderOrder() {
+            orderList.innerHTML = '';
+            if (order.length === 0) {
+                orderList.innerHTML = '<li class="empty-order">No items yet</li>';
+                totalSpan.textContent = '$0.00';
+                return;
+            }
+
+            let total = 0;
+            order.forEach(item => {
+                const li = document.createElement('li');
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                li.innerHTML = `
+                    <span>${item.name} × ${item.quantity}</span>
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                        <span>$${itemTotal.toFixed(2)}</span>
+                        <span class="controls">
+                            <button class="decrement" data-id="${item.id}" style="background:#ffc107; color:#333;">−</button>
+                            <button class="remove" data-id="${item.id}" style="background:#dc3545;">✕</button>
+                        </span>
+                    </span>
+                `;
+                orderList.appendChild(li);
+            });
+
+            // attach decrement events
+            document.querySelectorAll('#order-list .decrement').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    removeOne(id);
+                });
+            });
+
+            // attach remove (delete) events
+            document.querySelectorAll('#order-list .remove').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    removeItem(id);
+                });
+            });
+
+            totalSpan.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // ----- CHECKOUT -----
+        function checkout() {
+            if (order.length === 0) {
+                alert('Your order is empty. Add some items!');
+                return;
+            }
+            const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            alert(`✅ Order placed! Total: $${total.toFixed(2)}\nThank you for your purchase!`);
+            order = [];
+            renderOrder();
+        }
+
+        // ----- INIT -----
+        renderMenu();
+        renderOrder();
+
+        // ----- EVENT LISTENERS -----
+        checkoutBtn.addEventListener('click', checkout);
+        clearOrderBtn.addEventListener('click', clearOrder);
+    })();
+</script>
+
+</body>
+</html>
