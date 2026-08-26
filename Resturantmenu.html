@@ -48,12 +48,19 @@
         <button onclick="applyPromo()">Apply</button>
     </div>
 
+    <div class="tip-section">
+        <label for="tipPercent">Tip %:</label>
+        <input type="number" id="tipPercent" placeholder="Enter tip %" min="0" max="100">
+        <button onclick="applyTip()">Apply Tip</button>
+    </div>
+
     <ul id="orderList"></ul>
 
     <div class="total">
         Subtotal: $<span id="subtotal">0.00</span><br>
         Tax (8%): $<span id="taxAmount">0.00</span><br>
         Discount: -<span id="discountAmount">$0.00</span><br>
+        Tip: $<span id="tipAmount">0.00</span><br>
         <strong>Total: $<span id="total">0.00</span></strong>
     </div>
 
@@ -64,6 +71,7 @@
 <script>
 let orderItems = {};
 let discountRate = 0;
+let tipRate = 0;
 
 function addItem(name, price) {
     if (!orderItems[name]) {
@@ -81,7 +89,6 @@ function increaseItem(name) {
 
 function decreaseItem(name) {
     orderItems[name].quantity--;
-
     if (orderItems[name].quantity <= 0) {
         delete orderItems[name];
     }
@@ -108,10 +115,22 @@ function applyPromo() {
     renderOrder();
 }
 
+function applyTip() {
+    const tipInput = parseFloat(document.getElementById("tipPercent").value);
+    if (!isNaN(tipInput) && tipInput >= 0) {
+        tipRate = tipInput / 100;
+    } else {
+        tipRate = 0;
+    }
+    renderOrder();
+}
+
 function clearOrder() {
     orderItems = {};
     discountRate = 0;
+    tipRate = 0;
     document.getElementById("promoCode").value = "";
+    document.getElementById("tipPercent").value = "";
     renderOrder();
 }
 
@@ -127,14 +146,14 @@ function checkout() {
     for (let name in orderItems) {
         let item = orderItems[name];
         let itemTotal = item.price * item.quantity;
-
         receipt += `${name} x${item.quantity} - $${itemTotal.toFixed(2)}\n`;
         subtotal += itemTotal;
     }
 
     let tax = subtotal * 0.08;
     let discount = subtotal * discountRate;
-    let total = (subtotal + tax) - discount;
+    let tip = subtotal * tipRate;
+    let total = (subtotal + tax + tip) - discount;
     let date = new Date();
 
     receipt += "\n----------------------\n";
@@ -142,6 +161,9 @@ function checkout() {
     receipt += `Tax (8%): $${tax.toFixed(2)}\n`;
     if (discountRate > 0) {
         receipt += `Discount: -$${discount.toFixed(2)}\n`;
+    }
+    if (tipRate > 0) {
+        receipt += `Tip: $${tip.toFixed(2)}\n`;
     }
     receipt += `Total: $${total.toFixed(2)}\n`;
     receipt += `Date: ${date.toLocaleString()}\n`;
@@ -159,7 +181,6 @@ function renderOrder() {
 
     for (let name in orderItems) {
         const item = orderItems[name];
-
         const li = document.createElement("li");
         li.innerHTML = `
             ${name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
@@ -169,18 +190,19 @@ function renderOrder() {
                 <button onclick="removeItem('${name}')">Remove</button>
             </span>
         `;
-
         list.appendChild(li);
         subtotal += item.price * item.quantity;
     }
 
     let tax = subtotal * 0.08;
     let discount = subtotal * discountRate;
-    let total = (subtotal + tax) - discount;
+    let tip = subtotal * tipRate;
+    let total = (subtotal + tax + tip) - discount;
 
     document.getElementById("subtotal").textContent = subtotal.toFixed(2);
     document.getElementById("taxAmount").textContent = tax.toFixed(2);
     document.getElementById("discountAmount").textContent = `$${discount.toFixed(2)}`;
+    document.getElementById("tipAmount").textContent = tip.toFixed(2);
     document.getElementById("total").textContent = total.toFixed(2);
 }
 </script>
