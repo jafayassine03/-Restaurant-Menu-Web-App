@@ -15,27 +15,32 @@
 
     <div class="item">
         <span>Burger - $8.99</span>
-        <button onclick="addItem('Burger', 8.99)">Add</button>
+        <input type="number" id="burgerQty" min="1" value="1">
+        <button onclick="addItem('Burger', 8.99, parseInt(document.getElementById('burgerQty').value))">Add</button>
     </div>
 
     <div class="item">
         <span>Pizza - $12.50</span>
-        <button onclick="addItem('Pizza', 12.50)">Add</button>
+        <input type="number" id="pizzaQty" min="1" value="1">
+        <button onclick="addItem('Pizza', 12.50, parseInt(document.getElementById('pizzaQty').value))">Add</button>
     </div>
 
     <div class="item">
         <span>Pasta - $10.75</span>
-        <button onclick="addItem('Pasta', 10.75)">Add</button>
+        <input type="number" id="pastaQty" min="1" value="1">
+        <button onclick="addItem('Pasta', 10.75, parseInt(document.getElementById('pastaQty').value))">Add</button>
     </div>
 
     <div class="item">
         <span>Salad - $6.50</span>
-        <button onclick="addItem('Salad', 6.50)">Add</button>
+        <input type="number" id="saladQty" min="1" value="1">
+        <button onclick="addItem('Salad', 6.50, parseInt(document.getElementById('saladQty').value))">Add</button>
     </div>
 
     <div class="item">
         <span>Soda - $2.00</span>
-        <button onclick="addItem('Soda', 2.00)">Add</button>
+        <input type="number" id="sodaQty" min="1" value="1">
+        <button onclick="addItem('Soda', 2.00, parseInt(document.getElementById('sodaQty').value))">Add</button>
     </div>
 </div>
 
@@ -73,11 +78,11 @@ let orderItems = {};
 let discountRate = 0;
 let tipRate = 0;
 
-function addItem(name, price) {
+function addItem(name, price, qty=1) {
     if (!orderItems[name]) {
-        orderItems[name] = { price: price, quantity: 1 };
+        orderItems[name] = { price: price, quantity: qty };
     } else {
-        orderItems[name].quantity++;
+        orderItems[name].quantity += qty;
     }
     renderOrder();
 }
